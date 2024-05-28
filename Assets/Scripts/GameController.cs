@@ -6,11 +6,15 @@ public class GameController : MonoBehaviour
 {
     public static GameController Instance;
 
-    [SerializeField] private ColorsDataBase _colorDataBase;
-    [SerializeField] private DifficultiesDataBase _difficultiesDataBase;
+    [SerializeField] private DropsController _dropsController;
 
-    public IReadOnlyCollection<Color32> Colors => _colorDataBase.Colors;
-    public IReadOnlyCollection<Difficulty> Difficulties => _difficultiesDataBase.Difficulties;
+    [Space(2f), Header("Databases")]
+    [SerializeField] private ColorsDataBase _colorDatabase;
+    [SerializeField] private DifficultiesDataBase _difficultiesDatabase;
+
+    public DropsController DropsController => _dropsController;
+    public IReadOnlyCollection<Color32> Colors => _colorDatabase.Colors;
+    public IReadOnlyCollection<Difficulty> Difficulties => _difficultiesDatabase.Difficulties;
 
     private void Awake()
     {
@@ -23,5 +27,10 @@ public class GameController : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
+
+    private void Start()
+    {
+        DropsController.SpawnDrop(0.5f);
     }
 }

@@ -19,6 +19,17 @@ public class PlayerCircle : MonoBehaviour
         _spriteRenderer.color = _colors[0];
     }
 
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        Drop drop = collision.GetComponent<Drop>();
+
+        if (drop != null)
+        {
+            drop.Destroy();
+            GameController.Instance.DropsController.DropPool.ReturnToPool(drop);
+        }
+    }
+
     private void Update()
     {
         if (Input.touchCount > 0)
@@ -27,8 +38,7 @@ public class PlayerCircle : MonoBehaviour
 
             if (touch.phase == TouchPhase.Ended)
             {
-                print("s");
-                _spriteRenderer.color = _colors.IndexOf(_spriteRenderer.color) == _colors.Count - 1 ? 
+                _spriteRenderer.color = _colors.IndexOf(_spriteRenderer.color) == _colors.Count - 1 ?
                     _colors[0] : _colors[_colors.IndexOf(_spriteRenderer.color) + 1];
             }
         }
