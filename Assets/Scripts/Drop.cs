@@ -4,15 +4,21 @@ using UnityEngine;
 
 public class Drop : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] private float _fallSpeed = 1f;
+    public SpriteRenderer SpriteRenderer { get; private set; }
+
+    private void Awake()
     {
-        
+        SpriteRenderer = GetComponent<SpriteRenderer>();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void FixedUpdate()
     {
-        
+        Fall();
+    }
+
+    private void Fall()
+    {
+        transform.Translate(Vector3.down * _fallSpeed);
     }
 }
