@@ -5,6 +5,7 @@ using UnityEngine;
 public class Drop : MonoBehaviour
 {
     [SerializeField] private float _fallSpeed = 0f;
+
     public SpriteRenderer SpriteRenderer { get; private set; }
 
     private void Awake()

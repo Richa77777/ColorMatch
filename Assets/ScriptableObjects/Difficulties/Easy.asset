@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45cecac2887f77740a81ade1370623bb, type: 3}
   m_Name: Easy
   m_EditorClassIdentifier: 
-  _dropSpeed: 0.5
-  _dropFrequency: 0.5
+  _dropSpeed: 1
+  _dropFrequency: 1
   _numberOfColors: 3

@@ -6,9 +6,9 @@ public class Difficulty : ScriptableObject
 {
     [SerializeField] private float _dropSpeed;
     [SerializeField] private float _dropFrequency;
-    [SerializeField] private float _numberOfColors;
+    [SerializeField] private int _numberOfColors;
 
     public float DropSpeed => _dropSpeed;
     public float DropFrequency => _dropFrequency;
-    public float NumberOfColors => _numberOfColors;
+    public int NumberOfColors => _numberOfColors;
 }
