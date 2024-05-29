@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Difficulties Database", menuName = "Game/Difficulties Database")]
-public class DifficultiesDataBase : ScriptableObject
+public class DifficultiesDatabase : ScriptableObject
 {
     [SerializeField] private List<Difficulty> _difficulties = new List<Difficulty>();
 

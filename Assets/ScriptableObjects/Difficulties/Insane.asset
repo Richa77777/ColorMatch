@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 45cecac2887f77740a81ade1370623bb, type: 3}
-  m_Name: Easy
+  m_Name: Insane
   m_EditorClassIdentifier: 
-  _dropSpeed: 1.5
-  _dropFrequency: 1.5
+  _dropSpeed: 3
+  _dropFrequency: 0.8
   _numberOfColors: 2
   _missesForLose: 3

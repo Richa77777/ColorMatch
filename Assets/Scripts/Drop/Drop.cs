@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Drop : MonoBehaviour
@@ -13,6 +11,16 @@ public class Drop : MonoBehaviour
         SpriteRenderer = GetComponent<SpriteRenderer>();
     }
 
+    private void OnEnable()
+    {
+        GameController.Instance.OnLose += StopFall;
+    }
+
+    private void OnDisable()
+    {
+        GameController.Instance.OnLose -= StopFall;
+    }
+
     private void FixedUpdate()
     {
         Fall();
@@ -21,6 +29,11 @@ public class Drop : MonoBehaviour
     private void Fall()
     {
         transform.Translate(Vector3.down * (_fallSpeed / 10));
+    }
+
+    private void StopFall()
+    {
+        _fallSpeed = 0f;
     }
 
     public void SetFallSpeed(float fallSpeed)

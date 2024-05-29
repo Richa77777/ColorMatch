@@ -2,22 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(SpriteRenderer), typeof(PlayerScore))]
 public class PlayerCircle : MonoBehaviour
 {
+    [SerializeField] private AudioClip _dropPop;
+
     private List<Color32> _colors = new List<Color32>();
 
     private SpriteRenderer _spriteRenderer;
+    private AudioSource _audioSource;
     private PlayerScore _playerScore;
+
     private Coroutine _dropHitCor;
-    
     private int _currentColorIndex = 0;
-    
+
     private void Awake()
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
+        _audioSource = GetComponent<AudioSource>();
         _playerScore = GetComponent<PlayerScore>();
     }
 
@@ -26,6 +29,17 @@ public class PlayerCircle : MonoBehaviour
         _colors = new List<Color32>(GameController.Instance.Colors.Take(GameController.Instance.CurrentDifficulty.NumberOfColors));
         _spriteRenderer.color = _colors[_currentColorIndex];
     }
+
+    private void OnEnable()
+    {
+        GameController.Instance.OnLose += DisableScript;
+    }
+
+    private void OnDisable()
+    {
+        GameController.Instance.OnLose -= DisableScript;
+    }
+
     private void Update()
     {
         ChangeColor();
@@ -40,6 +54,8 @@ public class PlayerCircle : MonoBehaviour
             if (_dropHitCor == null)
                 _dropHitCor = StartCoroutine(DropHit());
 
+            _audioSource.PlayOneShot(_dropPop);
+
             if (drop.SpriteRenderer.color == _spriteRenderer.color)
             {
                 _playerScore.AddScore(GameController.Instance.ScoreForMatch);
@@ -48,10 +64,11 @@ public class PlayerCircle : MonoBehaviour
             else
             {
                 _playerScore.AddScore(GameController.Instance.ScoreForMismatch);
+                GameController.Instance.OnMiss?.Invoke();
                 // Действия при несовпадении цветов
             }
 
-            
+
             // Действия с каплей
             Vector3 dropPosition = drop.transform.position;
             Vector3 dropHitRotation = Vector3.zero;
@@ -116,5 +133,10 @@ public class PlayerCircle : MonoBehaviour
 
         transform.localScale = startScale;
         _dropHitCor = null;
+    }
+
+    private void DisableScript()
+    {
+        this.enabled = false;
     }
 }

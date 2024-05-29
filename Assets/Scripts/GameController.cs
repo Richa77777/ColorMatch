@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,9 +9,12 @@ public class GameController : MonoBehaviour
 {
     public static GameController Instance;
 
+    public Action OnMiss;
+    public Action OnLose;
+
     [Space(2f), Header("Databases")]
-    [SerializeField] private ColorsDataBase _colorDatabase;
-    [SerializeField] private DifficultiesDataBase _difficultiesDatabase;
+    [SerializeField] private ColorsDatabase _colorDatabase;
+    [SerializeField] private DifficultiesDatabase _difficultiesDatabase;
 
     [Space(2f), Header("Controllers")]
     [SerializeField] private DropsController _dropsController;
@@ -19,6 +23,11 @@ public class GameController : MonoBehaviour
     [Space(2f), Header("Background")]
     [SerializeField] private Sprite[] _backgrounds = new Sprite[4];
     [SerializeField] private Image _backgroundImage;
+
+    [SerializeField] private GameObject _loseTab;
+
+    private int _misses = 0;
+    private Coroutine _gameProcess;
 
     public int ScoreForMatch { get; private set; } = 1;
     public int ScoreForMismatch { get; private set; } = -1;
@@ -32,28 +41,62 @@ public class GameController : MonoBehaviour
 
     private void Awake()
     {
-        Application.targetFrameRate = 60;
-        _backgroundImage.sprite = PlayerPrefs.HasKey("Background") ? _backgrounds[PlayerPrefs.GetInt("Background")] : _backgrounds[0];
-
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
-            print("s");
         }
         else
         {
             Destroy(gameObject);
         }
 
-        CurrentDifficulty = _difficultiesDatabase.Difficulties.FirstOrDefault();
+        Application.targetFrameRate = 60;
 
-        StartCoroutine(GameProcess());
+        _backgroundImage.sprite = PlayerPrefs.HasKey("Background") ? _backgrounds[PlayerPrefs.GetInt("Background")] : _backgrounds[0];
+
+        CurrentDifficulty = Difficulties.ElementAt(PlayerPrefs.GetInt("Difficulty")); // Устанавливаем сложность
+
+        if (_gameProcess != null)
+        {
+            StopCoroutine(_gameProcess);
+            _gameProcess = null;
+        }
+
+        _gameProcess = StartCoroutine(GameProcess());
+    }
+
+    private void OnEnable()
+    {
+        OnMiss += AddMiss;
+    }
+
+    private void OnDisable()
+    {
+        OnMiss -= AddMiss;
     }
 
     public void SetDifficulty(Difficulty difficulty)
     {
         CurrentDifficulty = difficulty;
+    }
+
+    private void AddMiss()
+    {
+        _misses++;
+
+        if (_misses == CurrentDifficulty.MissesForLose)
+        {
+            Lose();
+            OnLose?.Invoke();
+        }
+    }
+
+    private void Lose()
+    {
+        StopCoroutine(_gameProcess);
+        _gameProcess = null;
+
+        _loseTab.SetActive(true);
     }
 
     private IEnumerator GameProcess()
